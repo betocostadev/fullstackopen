@@ -18,6 +18,10 @@ Open course with topics about React, Redux, Node.js, MongoDB, and GraphQL.
   - a: General info
   - b: Fundamentals of Web Apps
 - Part 1: Introduction to React
+  - a: Introduction to React
+  - b: JavaScript
+  - c: Component state, event handlers
+  - d: A more complex state, debugging React Apps
 - Part 2: Communicating with server
 - Part 3: Programming a server with Node.js and Express
 - Part 4: Testing Express servers, user administration
