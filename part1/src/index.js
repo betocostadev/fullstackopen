@@ -14,16 +14,20 @@ const Hello = ({ name, age }) => {
   )
 }
 
+const Display = ({ counter }) => <p>{counter}</p>
+
+const Button = ({ handleClick, text }) => <button onClick={ handleClick }>{ text }</button>
+
 const App = (props) => {
   const [ counter, setCounter ] = useState(0)
 
+  const increaseByOne = () => setCounter(counter + 1)
+  const decreaseByOne = () => setCounter(counter - 1)
+  const setToZero = () => setCounter(0)
+  console.log('rendering...', counter)
   // setTimeout(
   //   () => setCounter(counter + 1),
   //   1000)
-
-  console.log('rendering...', counter)
-
-  // const handleClick = () => console.log('clicked')
 
   const now = new Date()
   // Using the age here and also passing the age
@@ -35,13 +39,13 @@ const App = (props) => {
       <h1>Greetings!</h1>
       <Hello name={someName} age={someAge} />
       <p>It is now: { now.toString() }</p>
-      <p>{ counter }</p>
-      <button onClick={() => setCounter(counter + 1)}>
-        plus
-      </button>
-      <button onClick={() => setCounter(0)}>
-        zero
-      </button>
+
+      <Display counter={counter} />
+
+      <Button handleClick={increaseByOne} text='Plus' />
+      <Button handleClick={setToZero} text='Zero' />
+      <Button handleClick={decreaseByOne} text='Minus' />
+
     </div>
   )
 }
