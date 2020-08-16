@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import PersonList from './components/PersonList'
+import Search from './components/Search'
+import AddPersons from './components/AddPersons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -24,9 +27,11 @@ const App = () => {
     if(personExists) {
       alert(`${newPerson.name} is already in the Phonebook!`)
       setNewName('')
+      setNewPhone('')
     } else {
       setPersons(persons.concat(newPerson))
       setNewName('')
+      setNewPhone('')
     }
   }
 
@@ -42,10 +47,9 @@ const App = () => {
     setSearch(event.target.value)
   }
 
-  const list = persons.map(p => <li key={p.id}>{p.name}: {p.phone}</li>)
+  const list = persons
   const searchList = persons
     .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
-    .map(p => <li key={p.id}>{p.name}: {p.phone}</li>)
 
   const displayList = searchList.length
     ? searchList
@@ -54,24 +58,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNewName} />
-        </div>
-        <div>
-          number: <input value={newPhone} onChange={handleNewPhone} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h4>Search</h4>
-      <input label="Search" value={search} onChange={handleSearch} />
-      <h2>Numbers</h2>
-      <ul>
-        { displayList }
-      </ul>
-
+      <AddPersons add={addPerson} name={newName} phone={newPhone} handleName={handleNewName} handlePhone={handleNewPhone} />
+      <Search term={search} action={handleSearch}/>
+      <PersonList displayList={displayList} />
     </div>
   )
 }
