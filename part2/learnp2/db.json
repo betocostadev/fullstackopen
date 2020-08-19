@@ -23,6 +23,24 @@
         "content": "To start the JSON server you can run: npx json-server --port 3001 --watch db.json",
         "date": "2020-08-17T13:08:14.128Z",
         "important": true
+        },
+        {
+        "id": 5,
+        "content": "Add JSON server with npm install json-server --save-dev",
+        "date": "2020-08-17T13:08:14.128Z",
+        "important": true
+        },
+        {
+        "id": 6,
+        "content": "Add a command for JSON server to start using node: \"server\": \"json-server -p3001 --watch db.json\"",
+        "date": "2020-08-17T13:08:14.128Z",
+        "important": true
+        },
+        {
+        "id": 7,
+        "content": "Run JSON server with npm run server",
+        "date": "2020-08-17T13:08:14.128Z",
+        "important": true
         }
     ]
 }
