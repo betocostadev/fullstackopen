@@ -1,25 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+
 import PersonList from './components/PersonList'
 import Search from './components/Search'
 import AddPersons from './components/AddPersons'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: 1, name: 'Arto Hellas', phone: '040-123456' },
-    { id: 2, name: 'Ada Lovelace', phone: '39-44-5323523' },
-    { id: 3, name: 'Dan Abramov', phone: '12-43-234345' },
-    { id: 4, name: 'Mary Poppendieck', phone: '39-23-6423122' }
-  ])
+  const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
-  const [ newPhone, setNewPhone ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch ] = useState('')
+
+  const hook = () => {
+    async function fetchPersons() {
+      let response = await axios.get('http://localhost:3001/persons')
+      try {
+        setPersons(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchPersons()
+  }
+
+  useEffect(hook, [])
 
   const addPerson = (event) => {
     event.preventDefault()
     const newPerson = {
       id: persons.length + 1,
       name: newName,
-      phone: newPhone
+      number: newNumber
     }
 
     let personExists = persons.find(p => p.name.toLowerCase() === newPerson.name.toLowerCase())
@@ -27,11 +38,11 @@ const App = () => {
     if(personExists) {
       alert(`${newPerson.name} is already in the Phonebook!`)
       setNewName('')
-      setNewPhone('')
+      setNewNumber('')
     } else {
       setPersons(persons.concat(newPerson))
       setNewName('')
-      setNewPhone('')
+      setNewNumber('')
     }
   }
 
@@ -39,8 +50,8 @@ const App = () => {
     setNewName(event.target.value)
   }
 
-  const handleNewPhone = (event) => {
-    setNewPhone(event.target.value)
+  const handleNewNumber = (event) => {
+    setNewNumber(event.target.value)
   }
 
   const handleSearch = event => {
@@ -58,7 +69,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <AddPersons add={addPerson} name={newName} phone={newPhone} handleName={handleNewName} handlePhone={handleNewPhone} />
+      <AddPersons add={addPerson} name={newName} phone={newNumber} handleName={handleNewName} handleNumber={handleNewNumber} />
       <Search term={search} action={handleSearch}/>
       <PersonList displayList={displayList} />
     </div>
