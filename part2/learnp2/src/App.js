@@ -44,22 +44,37 @@ const App = () => {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
-      id: notes.length + 1
+      // id: notes.length + 1
     }
-
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
+    axios.post('http://localhost:3001/notes', noteObject)
+      .then(response => {
+        console.log(response)
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+      })
   }
 
   const handleNoteChange = (event) => {
     setNewNote(event.target.value)
   }
 
+  const toggleImportanceOf = id => {
+    const noteEndpoint = `http://localhost:3001/notes/${id}`
+    const note = notes.find(n => n.id === id)
+    const changedNote = { ...note, important: !note.important }
+
+    axios.put(noteEndpoint, changedNote)
+      .then(response => {
+        setNotes(notes.map(note => note.id !== id ? note : response.data))
+      })
+  }
+
   const notesToShow = showAll
   ? notes
   : notes.filter(note => note.important)
 
-  const noteList = notesToShow.map((note) => <Note key={note.id} note={note} />)
+  const noteList = notesToShow
+    .map((note) => <Note key={note.id} toggleImportance={() => toggleImportanceOf(note.id)} note={note} />)
 
   return (
     <div>
