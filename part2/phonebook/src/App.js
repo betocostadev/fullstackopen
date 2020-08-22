@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personsService from './services/persons'
 
 import PersonList from './components/PersonList'
 import Search from './components/Search'
@@ -13,9 +13,9 @@ const App = () => {
 
   const hook = () => {
     async function fetchPersons() {
-      let response = await axios.get('http://localhost:3001/persons')
+      const personList = await personsService.getAll()
       try {
-        setPersons(response.data)
+        setPersons(personList)
       } catch (error) {
         console.log(error)
       }
@@ -25,10 +25,9 @@ const App = () => {
 
   useEffect(hook, [])
 
-  const addPerson = (event) => {
+  const addPerson = async event => {
     event.preventDefault()
     const newPerson = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber
     }
@@ -40,17 +39,36 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     } else {
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      let person = await personsService.create(newPerson)
+      try {
+        setPersons(persons.concat(person))
+        setNewName('')
+        setNewNumber('')
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
-  const handleNewName = (event) => {
+  const deletePerson = async id => {
+    let personToRemove = persons.find(p => p.id === id)
+    try {
+      let response = await personsService.remove(id)
+      if (response.status === 200) {
+        setPersons(persons.filter(p => p.id !== id))
+      }
+    } catch (error) {
+      alert(`${personToRemove.name} was removed already`)
+      setPersons(persons.filter(p => p.id !== id))
+      console.log(error)
+    }
+  }
+
+  const handleNewName = event => {
     setNewName(event.target.value)
   }
 
-  const handleNewNumber = (event) => {
+  const handleNewNumber = event => {
     setNewNumber(event.target.value)
   }
 
@@ -71,7 +89,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <AddPersons add={addPerson} name={newName} phone={newNumber} handleName={handleNewName} handleNumber={handleNewNumber} />
       <Search term={search} action={handleSearch}/>
-      <PersonList displayList={displayList} />
+      <PersonList displayList={displayList} deletePerson={deletePerson}/>
     </div>
   )
 }
