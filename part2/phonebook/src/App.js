@@ -35,10 +35,14 @@ const App = () => {
     let personExists = persons.find(p => p.name.toLowerCase() === newPerson.name.toLowerCase())
 
     if(personExists) {
-      alert(`${newPerson.name} is already in the Phonebook!`)
-      setNewName('')
-      setNewNumber('')
-    } else {
+      let returnedPerson = await personsService.update(personExists.id, newPerson)
+      try {
+        setPersons(persons.map(person => person.id !== personExists.id ? person : returnedPerson))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    else {
       let person = await personsService.create(newPerson)
       try {
         setPersons(persons.concat(person))
@@ -52,15 +56,19 @@ const App = () => {
 
   const deletePerson = async id => {
     let personToRemove = persons.find(p => p.id === id)
-    try {
-      let response = await personsService.remove(id)
-      if (response.status === 200) {
+    let deleteMessage = window.confirm(`Do you really want to remove ${personToRemove.name} ?`)
+
+    if (deleteMessage) {
+      try {
+        let response = await personsService.remove(id)
+        if (response.status === 200) {
+          setPersons(persons.filter(p => p.id !== id))
+        }
+      } catch (error) {
+        alert(`${personToRemove.name} was removed already`)
         setPersons(persons.filter(p => p.id !== id))
+        console.log(error)
       }
-    } catch (error) {
-      alert(`${personToRemove.name} was removed already`)
-      setPersons(persons.filter(p => p.id !== id))
-      console.log(error)
     }
   }
 
@@ -78,7 +86,8 @@ const App = () => {
 
   const list = persons
   const searchList = persons
-    .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+    ? persons.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+    : []
 
   const displayList = searchList.length
     ? searchList

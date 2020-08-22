@@ -28,4 +28,13 @@ const remove = async id => {
   }
 }
 
-export default { getAll, create, remove }
+const update = async (id, updatedObj) => {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, updatedObj)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export default { getAll, create, remove, update }
