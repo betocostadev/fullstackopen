@@ -2,8 +2,8 @@ import React from 'react'
 
 const AddPersons = ({ add, name, phone, handleName, handleNumber }) => {
   return (
-    <div>
-    <h3>Add contact</h3>
+    <div className="add-person-form">
+      <h3>Add contact</h3>
       <form onSubmit={add}>
         <div>
           name: <input value={name} onChange={handleName} />
@@ -12,7 +12,7 @@ const AddPersons = ({ add, name, phone, handleName, handleNumber }) => {
           number: <input value={phone} onChange={handleNumber} />
         </div>
         <div>
-          <button type="submit">ADD</button>
+          <button type="submit" disabled={ !name.length || !phone.length ? true : false }>ADD</button>
         </div>
       </form>
     </div>

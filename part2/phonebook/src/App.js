@@ -4,12 +4,17 @@ import personsService from './services/persons'
 import PersonList from './components/PersonList'
 import Search from './components/Search'
 import AddPersons from './components/AddPersons'
+import Notification from './components/Notification'
+
+import './App.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch ] = useState('')
+  const [ notifyMessage, setNotifyMessage] = useState(null)
+  const [ notifyType, setNotifyType ] = useState(null)
 
   const hook = () => {
     async function fetchPersons() {
@@ -38,18 +43,23 @@ const App = () => {
       let returnedPerson = await personsService.update(personExists.id, newPerson)
       try {
         setPersons(persons.map(person => person.id !== personExists.id ? person : returnedPerson))
+        showNotification('update-success', newPerson.name)
+        clearAddFields()
       } catch (error) {
+        showNotification('update-error', newPerson.name)
         console.log(error)
+        clearAddFields()
       }
     }
     else {
       let person = await personsService.create(newPerson)
       try {
         setPersons(persons.concat(person))
-        setNewName('')
-        setNewNumber('')
+        showNotification('add-success', person.name)
+        clearAddFields()
       } catch (error) {
-        console.log(error)
+        showNotification('add-error', person.name)
+        clearAddFields()
       }
     }
   }
@@ -63,13 +73,59 @@ const App = () => {
         let response = await personsService.remove(id)
         if (response.status === 200) {
           setPersons(persons.filter(p => p.id !== id))
+          showNotification('delete-success', personToRemove.name)
         }
       } catch (error) {
-        alert(`${personToRemove.name} was removed already`)
+        showNotification('delete-error', personToRemove.name)
         setPersons(persons.filter(p => p.id !== id))
         console.log(error)
       }
     }
+  }
+
+  const showNotification = (type, content) => {
+    if (type === 'add-error') {
+      setNotifyMessage('Error adding person to Phonebook')
+      setNotifyType('error')
+      clearNotifications()
+    }
+    else if(type === 'add-success') {
+      setNotifyMessage(`${content} added to Phonebook`)
+      setNotifyType('success')
+      clearNotifications()
+    }
+    else if(type === 'update-success') {
+      setNotifyMessage(`${content} phone updated`)
+      setNotifyType('success')
+      clearNotifications()
+    }
+    else if(type === 'update-error') {
+      setNotifyMessage(`Error updating ${content}`)
+      setNotifyType('error')
+      clearNotifications()
+    }
+    else if(type === 'delete-success') {
+      setNotifyMessage(`${content} removed from Phonebook`)
+      setNotifyType('success')
+      clearNotifications()
+    }
+    else if(type === 'delete-error') {
+      setNotifyMessage(`${content} information not found on server`)
+      setNotifyType('error')
+      clearNotifications()
+    }
+  }
+
+  const clearNotifications =() => {
+    setTimeout(() => {
+      setNotifyMessage(null)
+      setNotifyType(null)
+    }, 4800);
+  }
+
+  const clearAddFields = () => {
+    setNewName('')
+    setNewNumber('')
   }
 
   const handleNewName = event => {
@@ -94,11 +150,16 @@ const App = () => {
     : list
 
   return (
-    <div>
-      <h2>Phonebook</h2>
+    <div className="app">
+      <h1>Phonebook</h1>
+      {
+        notifyMessage
+        ? <Notification message={notifyMessage} type={notifyType} />
+        : null
+      }
       <AddPersons add={addPerson} name={newName} phone={newNumber} handleName={handleNewName} handleNumber={handleNewNumber} />
       <Search term={search} action={handleSearch}/>
-      <PersonList displayList={displayList} deletePerson={deletePerson}/>
+      <PersonList className="person-list" displayList={displayList} deletePerson={deletePerson}/>
     </div>
   )
 }
