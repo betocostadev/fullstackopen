@@ -1,6 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+<<<<<<< HEAD
 import './index.css'
+=======
+// import axios from 'axios'
+>>>>>>> 927ad916d7995aaff33b3ac00cf579635c067b01
 
 import App from './App'
 
