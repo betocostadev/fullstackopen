@@ -35,7 +35,6 @@ const Content = ({ course }) => {
 }
 
 const Course = ({ courses }) => {
-  console.log(courses)
   return (
     <div>
     {
