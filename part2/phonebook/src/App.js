@@ -69,8 +69,8 @@ const App = () => {
     let deleteMessage = window.confirm(`Do you really want to remove ${personToRemove.name} ?`)
 
     if (deleteMessage) {
+      let response = await personsService.remove(id)
       try {
-        let response = await personsService.remove(id)
         if (response.status === 200) {
           setPersons(persons.filter(p => p.id !== id))
           showNotification('delete-success', personToRemove.name)
