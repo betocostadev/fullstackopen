@@ -41,6 +41,12 @@
       "date": "2020-08-17T13:08:14.128Z",
       "important": true,
       "id": 7
+    },
+    {
+      "content": "New note!",
+      "date": "2020-08-23T16:39:58.594Z",
+      "important": true,
+      "id": 8
     }
   ]
 }
