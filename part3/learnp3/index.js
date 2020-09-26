@@ -1,6 +1,10 @@
+const { response } = require('express')
 // Notes App backend - Using Express
 const express = require('express')
 const app = express()
+
+// Use the Express json parser to add notes that are sent using json format
+app.use(express.json())
 
 let notes = [
   {
@@ -23,6 +27,14 @@ let notes = [
   }
 ]
 
+const generateNoteId = () => {
+  const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => n.id))
+    : 0
+
+    return maxId + 1
+}
+
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
@@ -39,6 +51,33 @@ app.get('/api/notes/:id', (req, res) => {
   } else {
     res.status(404).end()
   }
+})
+
+app.post('/api/notes', (req, res) => {
+  const body = req.body
+
+  if (!body) {
+    return res.status(400).json({
+      error: 'Content missing'
+    })
+  }
+
+  const note = {
+    content: body.content,
+    important: body.important || false,
+    date: new Date(),
+    id: generateNoteId()
+  }
+  notes = notes.concat(note)
+
+  // console.log(note)
+  res.json(note)
+})
+
+app.delete('/api/notes/:id', (req, res) => {
+  const id = Number(req.params.id)
+  notes = notes.filter(note => note.id !== id)
+  res.status(204).end()
 })
 
 const PORT = 3001
