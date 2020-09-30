@@ -1,6 +1,7 @@
 import axios from 'axios'
 // const baseURL = 'http://localhost:3001/api/notes' // Old URL using local host
-const baseUrl = 'https://obscure-anchorage-17694.herokuapp.com/api/notes'
+// const baseUrl = 'https://obscure-anchorage-17694.herokuapp.com/api/notes' // Access building front-end from local host
+const baseUrl = '/api/notes'
 
 const getAll = () => {
   const request = axios.get(baseUrl)
