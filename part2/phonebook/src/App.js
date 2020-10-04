@@ -71,9 +71,9 @@ const App = () => {
     if (deleteMessage) {
       let response = await personsService.remove(id)
       try {
-        if (response.status === 200) {
-          setPersons(persons.filter(p => p.id !== id))
+        if (response.status === 204) {
           showNotification('delete-success', personToRemove.name)
+          setPersons(persons.filter(p => p.id !== id))
         }
       } catch (error) {
         showNotification('delete-error', personToRemove.name)
