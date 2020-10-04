@@ -113,12 +113,26 @@ const App = () => {
       })
   }
 
+  const removeNote = id => {
+    const note = notes.find(n => n.id === id)
+    noteService
+      .remove(id)
+      .then(result => {
+        setNotes(notes.filter(n => n.id !== id))
+      })
+      .catch(e => {
+        console.log(e)
+        showNotification('note-not-found', note.content)
+        setNotes(notes.filter(n => n.id !== id))
+      })
+  }
+
   const notesToShow = showAll
   ? notes
   : notes.filter(note => note.important)
 
   const noteList = notesToShow
-    .map((note) => <Note key={note.id} toggleImportance={() => toggleImportanceOf(note.id)} note={note} />)
+    .map((note) => <Note key={note.id} toggleImportance={() => toggleImportanceOf(note.id)} deleteNote={() => removeNote(note.id)} note={note} />)
 
   return (
     <div className="app">

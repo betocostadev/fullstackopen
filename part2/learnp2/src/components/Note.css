@@ -9,7 +9,7 @@
   font-weight: bold;
 }
 
-.note button {
+.note-button {
   width: 8vw;
   margin-right: 1rem;
 }
@@ -31,5 +31,31 @@
 
 .note-button:hover {
   box-shadow: 0 4px 6px 1px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.delete-note-button {
+  width: 30px;
+  margin-right: 1rem;
+}
+
+.delete-note-button {
+  background-color: #e62020;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.4rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.7rem;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,0.2);
+  transition: 0.2s;
+  text-transform: uppercase;
+}
+
+.delete-note-button:hover {
+  box-shadow: 0 4px 6px 1px rgba(44, 2, 2, 0.2);
+  font-weight: bold;
   cursor: pointer;
 }
