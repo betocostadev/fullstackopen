@@ -51,6 +51,7 @@
   width: 30vw;
   left: 35vw;
   background: rgb(214, 100, 100);
+  border-radius: 0.4rem;
   color: whitesmoke;
   text-align: center;
   font-weight: bold;
@@ -68,6 +69,7 @@
   width: 30vw;
   left: 35vw;
   background: rgb(102, 214, 87);
+  border-radius: 0.4rem;
   color: whitesmoke;
   text-align: center;
   font-weight: bold;

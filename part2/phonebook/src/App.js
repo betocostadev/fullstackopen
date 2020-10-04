@@ -37,6 +37,17 @@ const App = () => {
       number: newNumber
     }
 
+    if (newPerson.name.length < 3) {
+      showNotification('add-error', `Person name is too short`)
+      clearAddFields()
+      throw new Error('Name too short - minlength(3)')
+    }
+    if (newPerson.number.length < 8) {
+      showNotification('add-error', `Person number is too short`)
+      clearAddFields()
+      throw new Error('Number too short - minlength(8)')
+    }
+
     let personExists = persons.find(p => p.name.toLowerCase() === newPerson.name.toLowerCase())
 
     if(personExists) {
@@ -120,7 +131,7 @@ const App = () => {
     setTimeout(() => {
       setNotifyMessage(null)
       setNotifyType(null)
-    }, 4800);
+    }, 4800)
   }
 
   const clearAddFields = () => {
