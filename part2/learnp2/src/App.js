@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
-import Noteform from './components/Noteform'
+import NoteForm from './components/NoteForm'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 
 import noteService from './services/notes'
 import loginService from './services/login'
 import './App.css'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -166,30 +167,6 @@ const App = () => {
   const noteList = notesToShow
     .map((note) => <Note key={note.id} toggleImportance={() => toggleImportanceOf(note.id)} deleteNote={() => removeNote(note.id)} note={note} />)
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button style={{marginBottom: 1 + 'rem'}} type="submit">login</button>
-    </form>
-  )
-
   // DOM
   return (
     <div className="app">
@@ -202,11 +179,13 @@ const App = () => {
         : null
       }
 
-      {user === null ?
-        loginForm() :
+      {user === null
+        ?
+        <LoginForm loginHandler={handleLogin} user={username} pass={password} setUser={(e) => setUsername(e.target.value)} setPass={(e) => setPassword(e.target.value)} />
+        :
         <div>
           <p>{user.name} logged-in</p>
-          <Noteform addANote={(note) => addNote(note)} noteToAdd={newNote} handleNote={(ev) => handleNoteChange(ev)} />
+          <NoteForm addANote={(note) => addNote(note)} noteToAdd={newNote} handleNote={(ev) => handleNoteChange(ev)} />
           </div>
         }
 
