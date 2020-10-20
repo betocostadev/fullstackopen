@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import Note from './components/Note'
-import NoteForm from './components/NoteForm'
-import Notification from './components/Notification'
-import Footer from './components/Footer'
-
 import noteService from './services/notes'
 import loginService from './services/login'
-import './App.css'
+
+import Note from './components/Note'
+import NoteForm from './components/NoteForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
+import Footer from './components/Footer'
+import Togglable from './components/Togglable'
+
+import './App.css'
 
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [notifyType, setNotifyType] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   // useEffect(() => {
@@ -37,7 +36,7 @@ const App = () => {
     async function fetchNotes() {
       let initialNotes = await noteService.getAll()
       try {
-        console.log('promise fulfilled')
+        // console.log('promise fulfilled')
         setNotes(initialNotes)
       } catch (error) {
         console.log(error)
@@ -49,48 +48,58 @@ const App = () => {
   useEffect(hook, [])
   // console.log('render', notes.length, 'notes')
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      noteService.setToken(user.token)
+    }
+  }, [])
+
+  const clearNotificationState = () => {
+    setTimeout(() => {
+      setSuccessMessage(null)
+      setErrorMessage(null)
+      setNotifyType(null)
+    }, 4000)
+  }
+
+  const handleLogin = async (userObject) => {
+    try {
+      const user = await loginService.login(userObject)
+      window.localStorage.setItem('loggedNoteAppUser', JSON.stringify(user))
+      noteService.setToken(user.token)
+      setUser(user)
+
       setSuccessMessage(`Welcome ${user.username}!`)
       setNotifyType('success')
-      setTimeout(() => {
-        setSuccessMessage(null)
-        setNotifyType(null)
-      }, 4800)
+      clearNotificationState()
 
     } catch (error) {
       setErrorMessage('Wrong credentials')
       setNotifyType('error')
-      setTimeout(() => {
-        setErrorMessage(null)
-        setNotifyType(null)
-      }, 5000)
+      clearNotificationState()
     }
-    console.log('logging in with', username, password)
   }
 
+  const handleLogout = () => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser')
+    setUser(null)
+    setSuccessMessage(`Logout success!`)
+    setNotifyType('success')
+    clearNotificationState()
 
-  const addNote = async (event) => {
-    event.preventDefault()
-    console.log(event)
-    // console.log('button clicked', event.target)
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-      // id: notes.length + 1
+    if (loggedUserJSON) {
+      window.localStorage.removeItem('loggedNoteAppUser')
     }
+  }
 
+  const addNote = async (noteObject) => {
     try {
       let newNote = await noteService.create(noteObject)
       setNotes(notes.concat(newNote))
       showNotification('add-success')
-      setNewNote('')
     } catch (error) {
       showNotification('add-error')
       console.log(error)
@@ -101,32 +110,18 @@ const App = () => {
     if (type === 'add-error') {
       setErrorMessage('Error adding a new note!')
       setNotifyType('error')
-      setTimeout(() => {
-        setErrorMessage(null)
-        setNotifyType(null)
-      }, 4800)
+      clearNotificationState()
     }
     else if(type === 'note-not-found') {
       setErrorMessage(`The note '${content}' was already deleted from the server`)
       setNotifyType('error')
-      setTimeout(() => {
-        setErrorMessage(null)
-        setNotifyType(null)
-      }, 4800)
+      clearNotificationState()
     }
     else if(type === 'add-success') {
       setSuccessMessage(`note added!`)
       setNotifyType('success')
-      setTimeout(() => {
-        setSuccessMessage(null)
-        setNotifyType(null)
-      }, 4800)
+      clearNotificationState()
     }
-  }
-
-  const handleNoteChange = (event) => {
-    console.log(event)
-    setNewNote(event.target.value)
   }
 
   const toggleImportanceOf = id => {
@@ -143,6 +138,7 @@ const App = () => {
         console.log(e)
         showNotification('note-not-found', note.content)
         setNotes(notes.filter(n => n.id !== id))
+        clearNotificationState()
       })
   }
 
@@ -150,15 +146,17 @@ const App = () => {
     const note = notes.find(n => n.id === id)
     noteService
       .remove(id)
-      .then(result => {
+      .then(() => {
         setNotes(notes.filter(n => n.id !== id))
       })
       .catch(e => {
         console.log(e)
         showNotification('note-not-found', note.content)
         setNotes(notes.filter(n => n.id !== id))
+        clearNotificationState()
       })
   }
+
 
   const notesToShow = showAll
   ? notes
@@ -178,16 +176,23 @@ const App = () => {
         ? <Notification message={successMessage} type={notifyType} />
         : null
       }
-
-      {user === null
+      {
+        user === null
         ?
-        <LoginForm loginHandler={handleLogin} user={username} pass={password} setUser={(e) => setUsername(e.target.value)} setPass={(e) => setPassword(e.target.value)} />
+        <div>
+          <Togglable buttonLabel="login">
+            <LoginForm login={handleLogin}
+            />
+          </Togglable>
+        </div>
         :
         <div>
-          <p>{user.name} logged-in</p>
-          <NoteForm addANote={(note) => addNote(note)} noteToAdd={newNote} handleNote={(ev) => handleNoteChange(ev)} />
-          </div>
-        }
+          <p>{user.name} logged-in</p><button onClick={handleLogout}>Logout</button>
+          <Togglable buttonLabel="new note">
+            <NoteForm createNote={addNote} />
+          </Togglable>
+        </div>
+      }
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
