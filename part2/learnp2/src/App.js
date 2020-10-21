@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import noteService from './services/notes'
 import loginService from './services/login'
 
@@ -62,7 +62,7 @@ const App = () => {
       setSuccessMessage(null)
       setErrorMessage(null)
       setNotifyType(null)
-    }, 4000)
+    }, 3800)
   }
 
   const handleLogin = async (userObject) => {
@@ -86,7 +86,7 @@ const App = () => {
   const handleLogout = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser')
     setUser(null)
-    setSuccessMessage(`Logout success!`)
+    setSuccessMessage('Logout success!')
     setNotifyType('success')
     clearNotificationState()
 
@@ -97,6 +97,7 @@ const App = () => {
 
   const addNote = async (noteObject) => {
     try {
+      noteFormRef.current.toggleVisibility()
       let newNote = await noteService.create(noteObject)
       setNotes(notes.concat(newNote))
       showNotification('add-success')
@@ -118,7 +119,7 @@ const App = () => {
       clearNotificationState()
     }
     else if(type === 'add-success') {
-      setSuccessMessage(`note added!`)
+      setSuccessMessage('note added!')
       setNotifyType('success')
       clearNotificationState()
     }
@@ -148,6 +149,9 @@ const App = () => {
       .remove(id)
       .then(() => {
         setNotes(notes.filter(n => n.id !== id))
+        setSuccessMessage('note removed')
+        setNotifyType('success')
+        clearNotificationState()
       })
       .catch(e => {
         console.log(e)
@@ -157,41 +161,42 @@ const App = () => {
       })
   }
 
+  const noteFormRef = useRef()
 
   const notesToShow = showAll
-  ? notes
-  : notes.filter(note => note.important)
+    ? notes
+    : notes.filter(note => note.important)
 
   const noteList = notesToShow
     .map((note) => <Note key={note.id} toggleImportance={() => toggleImportanceOf(note.id)} deleteNote={() => removeNote(note.id)} note={note} />)
 
   // DOM
   return (
-    <div className="app">
+    <div className='app'>
       <h1>Notes App</h1>
       {
         errorMessage
-        ? <Notification message={errorMessage} type={notifyType} />
-        : successMessage
-        ? <Notification message={successMessage} type={notifyType} />
-        : null
+          ? <Notification message={errorMessage} type={notifyType} />
+          : successMessage
+            ? <Notification message={successMessage} type={notifyType} />
+            : null
       }
       {
         user === null
-        ?
-        <div>
-          <Togglable buttonLabel="login">
-            <LoginForm login={handleLogin}
-            />
-          </Togglable>
-        </div>
-        :
-        <div>
-          <p>{user.name} logged-in</p><button onClick={handleLogout}>Logout</button>
-          <Togglable buttonLabel="new note">
-            <NoteForm createNote={addNote} />
-          </Togglable>
-        </div>
+          ?
+          <div>
+            <Togglable buttonLabel='login'>
+              <LoginForm login={handleLogin}
+              />
+            </Togglable>
+          </div>
+          :
+          <div>
+            <p>{user.name} logged-in</p><button onClick={handleLogout}>Logout</button>
+            <Togglable buttonLabel='new note' ref={noteFormRef}>
+              <NoteForm createNote={addNote} />
+            </Togglable>
+          </div>
       }
 
       <div>
