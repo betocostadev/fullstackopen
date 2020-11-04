@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { vote } from '../reducers/anecdoteReducer'
-import { notificationShow, notificationHide } from '../reducers/notificationReducer'
+import { addVote } from '../reducers/anecdoteReducer'
+import { notificationToggle } from '../reducers/notificationReducer'
 import Filter from './Filter'
 
 const Anecdote = ({ anecdote, handleClick }) => {
@@ -29,13 +29,11 @@ const AnecdoteList = () => {
 
     // console.log(filtered)
 
-  const handleVote = id => {
-    const anecdote = anecdotes.find(a => a.id === id)
-    dispatch(vote(id))
-    dispatch(notificationShow(`You voted ${anecdote.content}`))
-    setTimeout(() => {
-      dispatch(notificationHide(null))
-    }, 5000)
+  const handleVote = anecdote => {
+    const anecdoteToVote = anecdotes.find(a => a.id === anecdote.id)
+    dispatch(addVote(anecdoteToVote))
+
+    dispatch(notificationToggle(`You voted ${anecdote.content}`, 5))
   }
 
   return(
@@ -48,7 +46,7 @@ const AnecdoteList = () => {
           <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => handleVote(anecdote.id)}
+          handleClick={() => handleVote(anecdote)}
           />
         )
       }

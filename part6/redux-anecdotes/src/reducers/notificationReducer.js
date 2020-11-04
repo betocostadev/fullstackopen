@@ -9,18 +9,24 @@ const notificationReducer = (state = { show: false, message: null }, action) => 
   }
 }
 
-export const notificationShow = message => {
-  return {
-    type: 'SHOW_NOTIFICATION',
-    message,
+export const notificationToggle = (message, time) => {
+  function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  return async dispatch => {
+    dispatch({ type: 'SHOW_NOTIFICATION', message })
+    time = time * 1000
+    await timeout(time)
+    dispatch({ type: 'HIDE_NOTIFICATION', message })
   }
 }
 
-export const notificationHide = message => {
-  return {
-    type: 'HIDE_NOTIFICATION',
-    message,
-  }
-}
+// export const notificationHide = message => {
+//   return {
+//     type: 'HIDE_NOTIFICATION',
+//     message,
+//   }
+// }
 
 export default notificationReducer
