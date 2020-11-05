@@ -1,7 +1,7 @@
+// This file is now using the older way, connect with Redux
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { toggleImportanceOf } from '../reducers/noteReducer'
-import noteService from '../services/notes'
 
 const Note = ({ note, handleClick }) => {
   return(
@@ -12,34 +12,40 @@ const Note = ({ note, handleClick }) => {
   )
 }
 
-const Notes = () => {
-  const dispatch = useDispatch()
-
-  const toggleImportance = async (note) => {
-    const changedNote = await noteService.toggleImportanceOfNote(note)
-    dispatch(toggleImportanceOf(changedNote.id))
-  }
-
-  const notes = useSelector(state => {
-    if ( state.filter === 'ALL' ) {
-      return state.notes
-    }
-    return state.filter  === 'IMPORTANT'
-      ? state.notes.filter(note => note.important)
-      : state.notes.filter(note => !note.important)
-  })
-
+const Notes = (props) => {
   return(
     <ul>
-      {notes.map(note =>
+      {props.notes.map(note =>
         <Note
           key={note.id}
           note={note}
-          handleClick={() => toggleImportance(note)}
+          handleClick={() =>
+            props.toggleImportanceOf(note)
+          }
         />
       )}
     </ul>
   )
 }
 
-export default Notes
+const mapStateToProps = (state) => {
+  if ( state.filter === 'ALL' ) {
+    return {
+      notes: state.notes
+    }
+  }
+  return {
+    notes: (state.filter === 'IMPORTANT'
+    ? state.notes.filter(note => note.important)
+    : state.notes.filter(note => !note.important)
+    )
+  }
+}
+
+const mapDispatchToProps = {
+  toggleImportanceOf
+}
+
+const ConnectedNotes = connect(mapStateToProps, mapDispatchToProps)(Notes)
+
+export default ConnectedNotes

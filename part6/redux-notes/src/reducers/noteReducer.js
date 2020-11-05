@@ -64,10 +64,10 @@ export const createNote = content => {
   }
 }
 
-export const toggleImportanceOf = (id) => {
-  return {
-    type: 'TOGGLE_IMPORTANCE',
-    data: { id }
+export const toggleImportanceOf = note => {
+  return async dispatch => {
+    const changedNote = await noteService.toggleImportanceOfNote(note)
+    dispatch({ type: 'TOGGLE_IMPORTANCE', data: changedNote})
   }
 }
 
