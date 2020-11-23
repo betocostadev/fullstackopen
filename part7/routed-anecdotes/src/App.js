@@ -4,6 +4,8 @@ import {
   Switch, Route, Link, useParams, useHistory
 } from 'react-router-dom'
 
+import './App.css'
+
 const Menu = () => {
   const padding = {
     paddingRight: 5
@@ -22,7 +24,9 @@ const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(anecdote =>
-        <li key={anecdote.id} ><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>)
       }
     </ul>
   </div>
@@ -126,13 +130,16 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  const [notifyType, setNotifyType] = useState(null)
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
-    setNotification('Anecdote added!')
+    setNotification(`Anecdote ${anecdote.content} added!`)
+    setNotifyType('success')
     setTimeout(() => {
       setNotification('')
+      setNotifyType(null)
     }, 10000)
   }
 
@@ -150,9 +157,26 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const Notify = ({ message, type }) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className={ type === 'success' ? 'success-message' : 'error-message'}>
+        {message}
+      </div>
+    )
+  }
+
   return (
     <Router>
       <h1>Software anecdotes</h1>
+      {
+        notification
+          ? <Notify message={notification} type={notifyType} />
+          : null
+      }
       <Menu />
 
       <Switch>
