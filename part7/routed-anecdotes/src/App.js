@@ -4,6 +4,8 @@ import {
   Switch, Route, Link, useParams, useHistory
 } from 'react-router-dom'
 
+import { useField } from './hooks/index'
+
 import './App.css'
 
 const Menu = () => {
@@ -39,7 +41,7 @@ const Anecdote = ({ anecdotes }) => {
     <div>
       <h3>{anecdote.content} by {anecdote.author}</h3>
       <p>has {anecdote.votes} votes</p>
-      <p>for more info see <a href={anecdote.info} target="_blank">{anecdote.info}</a></p>
+      <p>for more info see <a href={anecdote.info} target="_blank" rel="noopener noreferrer">{anecdote.info}</a></p>
     </div>
   )
 }
@@ -60,51 +62,59 @@ const About = () => (
 
 const Footer = () => (
   <div>
-    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
+    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009' rel="noopener noreferrer">Full Stack -websovelluskehitys</a>.
 
-    See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
+    See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js' rel="noopener noreferrer">https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
   </div>
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  // Using the custom Hook useField
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
 
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
 
-    setContent('')
-    setAuthor('')
-    setInfo('')
+    handleReset()
+
     history.push('/')
   }
 
+  const handleReset = e => {
+    if(e) e.preventDefault()
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+  // <form onSubmit={handleSubmit}></form>
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} reset="" />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} reset="" />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} reset="" />
         </div>
-        <button>create</button>
+        <button onClick={handleSubmit}>create</button>
+        <button onClick={e => handleReset(e)}>reset</button>
       </form>
     </div>
   )
@@ -112,6 +122,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  console.log(useField())
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',

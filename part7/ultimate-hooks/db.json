@@ -1,0 +1,37 @@
+{
+  "notes": [
+    {
+      "content": "custom-hookit aivan mahtavia",
+      "id": 1
+    },
+    {
+      "content": "paras feature ikinä <3",
+      "id": 2
+    },
+    {
+      "content": "Hooks are great!",
+      "id": 3
+    },
+    {
+      "content": "Teste",
+      "id": 4
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "Jamiroquay",
+      "number": "39012909301",
+      "id": 2
+    },
+    {
+      "name": "Johnson",
+      "number": "11 99892-3231",
+      "id": 3
+    }
+  ]
+}
