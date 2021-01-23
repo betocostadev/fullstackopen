@@ -2,6 +2,8 @@ import React from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
 
+import UpdateAuthor from './UpdateAuthor'
+
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
   // This way will refetch every 2000 miliseconds
@@ -43,6 +45,8 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
+
+      <UpdateAuthor authors={authors} />
 
     </div>
   )

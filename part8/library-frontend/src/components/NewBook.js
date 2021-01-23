@@ -5,7 +5,7 @@ import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuhtor] = useState('')
-  const [published, setPublished] = useState(null)
+  const [published, setPublished] = useState(1500)
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
@@ -41,6 +41,7 @@ const NewBook = (props) => {
 
   return (
     <div>
+      <h3>Add a book</h3>
       <form onSubmit={submit}>
         <div>
           title
