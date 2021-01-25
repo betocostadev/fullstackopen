@@ -1,18 +1,20 @@
 {
-  "name": "graphql-fsopen-react-apollo-server",
+  "name": "personlist-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Apollo server for Person List GraphQL App",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/index.js",
+    "start": "nodemon ./src/index.js --require dotenv/config",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "FSOpen",
   "license": "MIT",
   "dependencies": {
     "apollo-server": "^2.19.2",
+    "dotenv": "^8.2.0",
     "graphql": "^15.4.0",
-    "uuid": "^8.3.2"
+    "mongoose": "^5.11.13",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
