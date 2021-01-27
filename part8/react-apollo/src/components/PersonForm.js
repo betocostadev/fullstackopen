@@ -11,16 +11,33 @@ const PersonForm = ({ setError }) => {
   // const [ createPerson ] = useMutation(CREATE_PERSON)
   // The way below will refetch the query as soon as a new person is added
   const [ createPerson ] = useMutation(CREATE_PERSON, {
-    refetchQueries: [ { query: ALL_PERSONS } ],
+    // To simply refetch the query
+    // refetchQueries: [ { query: ALL_PERSONS } ],
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
+    },
+    // To compare with what's in store and refetch only if needed
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_PERSONS })
+      store.writeQuery({
+        query: ALL_PERSONS,
+        data: {
+          ...dataInStore,
+          allPersons: [ ...dataInStore.allPersons, response.data.addPerson ]
+        }
+      })
     }
   })
 
   const submit = (event) => {
     event.preventDefault()
 
-    createPerson({  variables: { name, phone, street, city } })
+    createPerson({
+      variables: {
+        name, street, city,
+        phone: phone.length ? phone : null
+      }
+    })
 
     setName('')
     setPhone('')
