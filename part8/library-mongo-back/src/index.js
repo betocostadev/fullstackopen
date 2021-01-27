@@ -26,7 +26,6 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
  * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
 */
 
-
 const typeDefs = gql`
   type Author {
     name: String!
@@ -128,10 +127,12 @@ const resolvers = {
       return authors
     },
     me: (root, args, { currentUser }) => {
-      if (!currentUser) {
+      try {
+        return currentUser
+      } catch (error) {
+        console.log(error)
         throw new AuthenticationError("not authenticated")
       }
-      return currentUser
     }
   },
   Author: {
@@ -242,19 +243,7 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
-    },
-
-    // Old way, not using MongoDB
-    // addBook: (root, args) => {
-    //   const newBook = { ...args, id: uuidv4() }
-    //   const author = authors.find(a => a.name.toLowerCase() === args.author.toLowerCase())
-    //   if (!author) {
-    //     const newAuthor = { name: args.author, id: uuidv4() }
-    //     authors = authors.concat(newAuthor)
-    //   }
-    //   books = books.concat(newBook)
-    //   return newBook
-    // }
+    }
   }
 }
 
@@ -268,7 +257,6 @@ const server = new ApolloServer({
         auth.substring(7), JWT_SECRET
       )
       const currentUser = await User.findById(decodedToken.id)
-      // const currentUser = await User.findById(decodedToken.id).populate('friends')
       return { currentUser }
     }
   }

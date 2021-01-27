@@ -24,17 +24,13 @@ const Authors = (props) => {
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>
-            <th></th>
-            <th>
-              born
-            </th>
-            <th>
-              books
-            </th>
+            <th>Name</th>
+            <th>Born in</th>
+            <th>Books</th>
           </tr>
           {authors.map(a =>
             <tr key={a.name}>
@@ -48,8 +44,15 @@ const Authors = (props) => {
 
       <UpdateAuthor authors={authors} />
 
+
     </div>
   )
 }
+
+// {
+//   props.isAuth
+//   ? <UpdateAuthor authors={authors} />
+//   : null
+// }
 
 export default Authors
