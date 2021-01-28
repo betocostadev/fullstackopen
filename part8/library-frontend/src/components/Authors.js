@@ -12,7 +12,7 @@ const Authors = (props) => {
   // })
 
   if (result.loading)  {
-    return <div>loading...</div>
+    return <div>Loading authors...</div>
   }
 
   if (!props.show) {
