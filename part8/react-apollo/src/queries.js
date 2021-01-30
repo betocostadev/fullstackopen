@@ -1,17 +1,26 @@
 import { gql  } from '@apollo/client'
 
-export const ALL_PERSONS = gql`
-query {
-  allPersons {
-    name,
-    phone,
+// Person details is a fragment - FRAGMENTS are client side ONLY
+// Person details will get the data of the Person query, and it will be used below for all persons
+const PERSON_DETAILS = gql`
+  fragment PersonDetails on Person {
+    id
+    name
+    phone
     address {
-      street,
+      street
       city
     }
-    id
   }
-}
+`
+
+export const ALL_PERSONS = gql`
+  {
+    allPersons  {
+      ...PersonDetails
+    }
+  }
+  ${PERSON_DETAILS}
 `
 
 export const FIND_PERSON = gql`

@@ -1,7 +1,10 @@
 const config = require('../utils/config')
 const jwt = require('jsonwebtoken')
 
-const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
+// PUB SUB is used for sending subscriptions data
+// Our type will have a subscription and the addPerson mutation will use it
+const { ApolloServer, UserInputError, AuthenticationError, PubSub, gql } = require('apollo-server')
+const pubsub = new PubSub()
 const mongoose = require('mongoose')
 const Person = require('../models/person')
 const User = require('../models/user')
@@ -80,6 +83,10 @@ const typeDefs = gql`
       name: String!
     ): User
   }
+
+  type Subscription {
+    personAdded: Person!
+  }
 `
 
 const resolvers = {
@@ -124,6 +131,8 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
 
       return person
     },
@@ -184,6 +193,12 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
+  },
+
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    },
   }
 }
 
@@ -203,6 +218,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
