@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery, useApolloClient } from '@apollo/client'
-import { ALL_PERSONS } from './queries'
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client'
+import { ALL_PERSONS, PERSON_ADDED } from './queries'
 
 import LoginForm from './components/LoginForm'
 import Persons from './components/Persons'
@@ -26,6 +26,12 @@ const App = () => {
     }
   }, []) // eslint-disable-line
 
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
+  }
+
   const notify = (message) => {
     setErrorMessage(message)
     setTimeout(() => {
@@ -33,11 +39,28 @@ const App = () => {
     }, 10000)
   }
 
-  const logout = () => {
-    setToken(null)
-    localStorage.clear()
-    client.resetStore()
+  // Update the cache after a new subscription of a person added is fired
+  const updateCacheWith = (addedPerson) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id)
+
+    const dataInStore = client.readQuery({ query: ALL_PERSONS })
+    if (!includedIn(dataInStore.allPersons, addedPerson)) {
+      client.writeQuery({
+        query: ALL_PERSONS,
+        data: { allPersons : dataInStore.allPersons.concat(addedPerson) }
+      })
+    }
   }
+
+  // Fire subscription and action when a new person is added
+  useSubscription(PERSON_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedPerson = subscriptionData.data.personAdded
+      notify(`${addedPerson.name} added`)
+      updateCacheWith(addedPerson)
+    }
+  })
 
   if (!token) {
     return (
