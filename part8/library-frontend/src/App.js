@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useSubscription } from '@apollo/client'
+
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
 
 import LoginForm from './components/LoginForm'
 import Notify from './components/Notify'
@@ -43,6 +45,33 @@ const App = () => {
       setErrorMessage(null)
     }, 6500)
   }
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allPersons : dataInStore.allBooks.concat(addedBook) }
+      })
+    }
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+    }
+  })
+
+  // useSubscription(BOOK_ADDED, {
+  //   onSubscriptionData: ({ subscriptionData }) => {
+  //     console.log(subscriptionData)
+  //   }
+  // })
 
   return (
     <div>
