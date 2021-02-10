@@ -1,6 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+/part9/exerc-start/node_modules
+/part9/first-steps/node_modules
 /node_modules
 /.pnp
 .pnp.js
