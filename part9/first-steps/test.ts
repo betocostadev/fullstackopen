@@ -26,3 +26,10 @@ let colorGreen: string = Color[1]
 console.log(`Ugly color? ${green}`)
 console.log(`wich is ${colorGreen}`)
 
+enum webcast_type {
+  Youtube,
+  Vimeo,
+  Wowza
+}
+console.log(`Webcast type ${webcast_type.Youtube} is ${webcast_type[0]}`)
+
