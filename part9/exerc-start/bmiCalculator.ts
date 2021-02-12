@@ -1,3 +1,22 @@
+interface RunValues {
+  height: number;
+  weight: number;
+}
+
+const parseArgs = (args: Array<string>): RunValues => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  if (args.length >= 5) throw new Error('Too many arguments');
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3])
+    }
+  } else {
+    throw new Error('Provided values were not numbers!');
+  }
+}
+
 type Result = string;
 
 const bmiCalc = (weight: number, height: number) : Result => {
@@ -31,43 +50,55 @@ const bmiCalc = (weight: number, height: number) : Result => {
 }
 
 console.log('=========== BODY MASS CALCULATOR ==============');
+
 try {
-  console.log(bmiCalc(40, 166));
+  const { height, weight } = parseArgs(process.argv);
+  console.log(bmiCalc(height, weight));
 } catch (e) {
   console.log('Something went wrong, error message: ', e.message);
 }
-try {
-  console.log(bmiCalc(42, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
+
+const runBmiTests = () : void => {
+  try {
+    console.log(bmiCalc(40, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(42, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(50, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(55, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(72, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(84, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(98, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
+  try {
+    console.log(bmiCalc(158, 166));
+  } catch (e) {
+    console.log('Something went wrong, error message: ', e.message);
+  }
 }
-try {
-  console.log(bmiCalc(50, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
-try {
-  console.log(bmiCalc(55, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
-try {
-  console.log(bmiCalc(72, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
-try {
-  console.log(bmiCalc(84, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
-try {
-  console.log(bmiCalc(98, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
-try {
-  console.log(bmiCalc(158, 166));
-} catch (e) {
-  console.log('Something went wrong, error message: ', e.message);
-}
+
+// runBmiTests()

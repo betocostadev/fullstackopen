@@ -1,5 +1,4 @@
-type userInput = number[]
-
+type userInput = Array<number>
 interface userResult {
     periodLength: number;
     trainingDays: number;
@@ -11,10 +10,10 @@ interface userResult {
 }
 
 const exerciseCalculator = (arr: userInput) => {
-    const target: number = 2
-    const periodLength: number = arr.length
-    const trainingDays: number = arr.filter(a => a > 0).length
-    const average: number = arr.reduce((acc, cur) => acc + cur, 0) / arr.length
+    const target: number = arr[0]
+    const periodLength: number = arr.length - 1
+    const trainingDays: number = arr.filter(a => a > 0).length - 1
+    const average: number = arr.filter((a, i) => i !== 0).reduce((acc, cur) => acc + cur, 0) / (arr.length - 1)
 
     const getRating = (a: number) : number => {
         if (a >= 2) return 3
@@ -52,4 +51,32 @@ const exerciseCalculator = (arr: userInput) => {
     return getResults(resObj)
 }
 
-console.log(exerciseCalculator([3, 1, 2, 2.5, 0, 3, 1]))
+const userData: Array<number> = []
+let correct: boolean = false
+
+const parseArguments = (args: Array<any>): boolean => {
+    args.forEach((a, i) => {
+        if (i >= 2) {
+            let num = Number(a);
+            if (isNaN(num)) {
+                throw new Error('You must provide only numbers!');
+            }
+            userData.push(Number(a));
+        }
+    })
+
+    if (userData.length < 2) throw new Error('Not enough arguments');
+    else correct = true
+
+    return true
+}
+
+
+try {
+    parseArguments(process.argv)
+    if (correct) {
+        console.log(exerciseCalculator(userData))
+    }
+} catch (e) {
+    console.log('Error, something bad happened, message: ', e.message);
+}
