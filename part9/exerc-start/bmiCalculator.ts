@@ -19,14 +19,14 @@ const parseArgs = (args: Array<string>): RunValues => {
 
 type Result = string;
 
-const bmiCalc = (weight: number, height: number) : Result => {
-  if (isNaN(Number(weight)) || isNaN(height)) {
+const bmiCalc = (height: number, weight: number) : Result => {
+  if (isNaN(height) || isNaN(Number(weight))) {
     throw new Error('Provided values were not numbers!');
   }
 
   const bmi: number = weight / ((height / 100) * (height / 100));
   let result: string;
-  const message: string = `Based on the weight ${weight}kg and height ${height}cm.`;
+  const message: string = `Based on the height ${height}cm and weight ${weight}kg, the result is:`;
 
   if (bmi <= 15.00) {
     result = 'Very severely underweight'

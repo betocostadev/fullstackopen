@@ -16,7 +16,7 @@ type Operation = 'multiply' | 'add' | 'divide';
 //   }
 // }
 
-// Making sure the calculator would work if the could receive external input
+// Making sure the calculator would work if the code could receive external input
 type Result = number;
 
 const calculator = (a: number, b: number, op : Operation) : Result => {
