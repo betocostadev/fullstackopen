@@ -28,12 +28,12 @@ app.get('/bmi?', (req, res) => {
   }
 });
 
+interface exData {
+  daily_exercises: Array<number>
+  target: number
+}
 
 app.post('/api/exercises', (req, res) => {
-  interface exData {
-    daily_exercises: Array<number>
-    target: number
-  }
 
   const body: exData = req.body as exData;
 
