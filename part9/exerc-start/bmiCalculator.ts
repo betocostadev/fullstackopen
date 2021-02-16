@@ -11,11 +11,11 @@ const parseArgs = (args: Array<string>): RunValues => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 type Result = string;
 
@@ -25,29 +25,29 @@ const bmiCalc = (height: number, weight: number) : Result => {
   }
 
   const bmi: number = weight / ((height / 100) * (height / 100));
-  let result: string;
-  const message: string = `Based on the height ${height}cm and weight ${weight}kg, the result is:`;
+  let result;
+  const message = `Based on the height ${height}cm and weight ${weight}kg, the result is:`;
 
   if (bmi <= 15.00) {
-    result = 'Very severely underweight'
+    result = 'Very severely underweight';
   } else if (bmi > 15.01 && bmi <= 16.00) {
-    result = 'Severely underweight'
+    result = 'Severely underweight';
   } else if (bmi >= 16.01 && bmi <= 18.50) {
-    result = 'Underweight'
+    result = 'Underweight';
   } else if (bmi >= 18.51 && bmi <= 25.00) {
-    result = 'Normal (healthy weight)'
+    result = 'Normal (healthy weight)';
   } else if (bmi >= 25.01 && bmi <= 30.00) {
-    result = 'Overweight'
+    result = 'Overweight';
   } else if (bmi >= 30.01 && bmi <= 35.00) {
-    result = 'Obese Class I (Moderately obese)'
+    result = 'Obese Class I (Moderately obese)';
   } else if (bmi >= 35.01 && bmi <= 40.00) {
-    result = 'Obese Class II (Severely obese)'
+    result = 'Obese Class II (Severely obese)';
   } else {
-    result = 'Obese Class III (Very severely obese)'
+    result = 'Obese Class III (Very severely obese)';
   }
 
-  return `${message} You are ${result}`
-}
+  return `${message} You are ${result}`;
+};
 
 console.log('=========== BODY MASS CALCULATOR ==============');
 
@@ -55,50 +55,51 @@ try {
   const { height, weight } = parseArgs(process.argv);
   console.log(bmiCalc(height, weight));
 } catch (e) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   console.log('Something went wrong, error message: ', e.message);
 }
 
-const runBmiTests = () : void => {
-  try {
-    console.log(bmiCalc(40, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(42, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(50, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(55, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(72, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(84, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(98, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-  try {
-    console.log(bmiCalc(158, 166));
-  } catch (e) {
-    console.log('Something went wrong, error message: ', e.message);
-  }
-}
+// const runBmiTests = () : void => {
+//   try {
+//     console.log(bmiCalc(40, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(42, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(50, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(55, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(72, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(84, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(98, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+//   try {
+//     console.log(bmiCalc(158, 166));
+//   } catch (e) {
+//     console.log('Something went wrong, error message: ', e.message);
+//   }
+// };
 
 // runBmiTests()
