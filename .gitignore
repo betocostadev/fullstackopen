@@ -3,6 +3,7 @@
 # dependencies
 /part9/exerc-start/node_modules
 /part9/first-steps/node_modules
+/part9/flightDiaries/node_modules
 /node_modules
 /.pnp
 .pnp.js
