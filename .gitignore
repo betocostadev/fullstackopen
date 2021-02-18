@@ -4,6 +4,8 @@
 /part9/exerc-start/node_modules
 /part9/first-steps/node_modules
 /part9/flightDiaries/node_modules
+/part9/flightDiaries/build
+/part9/patientor/server/node_modules
 /node_modules
 /.pnp
 .pnp.js
