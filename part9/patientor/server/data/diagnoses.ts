@@ -1,7 +1,6 @@
 import { DiagnoseEntry } from '../src/types';
 
-const diagnoseEntries: Array<DiagnoseEntry> =
-[
+const diagnoseEntries: Array<DiagnoseEntry> = [
   {
     "code": "M24.2",
     "name": "Disorder of ligament",
