@@ -27,7 +27,8 @@ router.post('/', (req, res) => {
 
     res.json(addedEntry);
   } catch (error) {
-    res.status(400).send(error);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    res.status(400).send(error.message);
   }
   // Before - UNSAFE - all properties would be "any"
   // const { date, weather, visibility, comment } = req.body;
