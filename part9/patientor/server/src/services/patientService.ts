@@ -1,5 +1,5 @@
 import patients from '../../data/patients';
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
 import { NonSensitiveDiaryEntry, PatientEntry, NewPatientEntry } from '../types';
 
@@ -14,9 +14,10 @@ const getNonsensitiveEntries = (): NonSensitiveDiaryEntry[] => {
 };
 
 const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
+  const id: string = uuidv4();
 
   const newPatientEntry = {
-    id: uuidv4(),
+    id: id,
     ...entry
   };
 
