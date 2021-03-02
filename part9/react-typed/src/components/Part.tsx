@@ -9,6 +9,7 @@ const assertNever = (value: never): never => {
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
 };
+
 const partSelector =  (part: CoursePart) => {
   switch (part.name) {
     case 'Fundamentals':
@@ -42,7 +43,7 @@ const partSelector =  (part: CoursePart) => {
 };
 
 const Part: React.FC<{ part: CoursePart }> = ({ part }) => {
-  return partSelector(part)
+  return partSelector(part);
 };
 
 export default Part;
