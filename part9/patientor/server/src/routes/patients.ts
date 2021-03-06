@@ -13,15 +13,14 @@ router.get('/', (_req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  try {
-    const id: string = req.params.id;
-    const patient = patientService.getPublicPatientEntry(id);
+  const id: string = req.params.id;
+  const patient = patientService.getPublicPatientEntry(id);
+  if (patient) {
     return res.json(patient);
-  } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  } else {
     return res.status(404).send({ error: 404, message: 'No patient with provided ID' });
   }
-})
+});
 
 router.post('/', (req, res) => {
   try {
