@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { NewPatientEntry, Gender, Entry,  HospitalEntry,
-  OccupationalHealthCareEntry, HealthCheckEntry, BaseEntry, DiagnoseEntry } from './types';
+import { NewPatientEntry, Gender, Entry,  HospitalEntry, OccupationalHealthCareEntry,
+  HealthCheckEntry, BaseEntry, DiagnoseEntry, newEntry } from './types';
 
 // TYPE GUARDS
 const isString = (text: any): text is string => {
@@ -62,6 +62,20 @@ const isHealthCheckEntry = (entry: any): entry is HealthCheckEntry => {
   if (entry.healthCheckRating === undefined && !isString(entry.healthCheckRating)) {
     return false;
   }
+  return entry;
+};
+
+const isNewEntry = (entry: any): entry is BaseEntry => {
+  if (entry.diagnosisCodes) {
+    if (!parseDiagnosisCodes(entry.diagnosisCodes)) {
+      throw new Error(`Incorrect Diagnosis Code ${entry.diagnosis}`);
+    }
+  }
+
+  if (!entry || !isString(entry.description) || !isDate(entry.date) || !isString(entry.specialist)) {
+    throw new Error('Error adding entry: Incorrect description, date or specialist');
+  }
+
   return entry;
 };
 
@@ -137,4 +151,19 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
   };
 };
 
-export default toNewPatientEntry;
+const toNewEntry = (object: any): newEntry => {
+  if (!isNewEntry(object)) {
+    throw new Error(`Not a base entry ${object}`);
+  }
+  if (isHospitalEntry(object)) {
+    return { ...object, type: 'Hospital' };
+  } else if (isOccupationalHealthCareEntry(object)) {
+    return { ...object, type: 'OccupationalHealthcare' };
+  } else if (isHealthCheckEntry(object)) {
+    return { ...object, type: 'HealthCheck' };
+  } else {
+    throw new Error(`Not an entry from the above types.`);
+  }
+};
+
+export default { toNewPatientEntry, toNewEntry };

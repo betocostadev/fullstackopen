@@ -60,6 +60,15 @@ export interface PatientEntry {
   entries: Entry[]
 }
 
+export type newHealthCheckEntry = Omit<HealthCheckEntry, 'id'>;
+export type newHospitalEntry = Omit<HospitalEntry, 'id'>;
+export type newOccupationalHealthCareEntry = Omit<OccupationalHealthCareEntry, 'id'>;
+
+export type newEntry =
+  | newHealthCheckEntry
+  | newHospitalEntry
+  | newOccupationalHealthCareEntry;
+
 export type NewPatientEntry = Omit<PatientEntry, 'id'>;
 
 export type PublicPatient = Omit<PatientEntry, 'ssn' | 'entries' >;
